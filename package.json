@@ -9,9 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "express": "^4.16.3",
+    "express-ws": "^4.0.0",
     "mongodb": "^3.1.1",
     "path": "^0.12.7",
-    "websocket": "^1.0.26"
+    "webpurify": "^2.0.1"
   }
 }

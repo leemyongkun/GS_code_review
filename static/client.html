@@ -13,10 +13,10 @@
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <span class="glyphicon glyphicon-comment"></span> 노트 심플 채팅
+                    <span class="glyphicon glyphicon-comment"></span> 노드 심플 채팅
                 </div>
                 <div class="panel-body">
-                    <ul class="chat"> </ul>
+                    <ul id="chatArea"> </ul>
                 </div>
                 <div class="panel-footer">
                     <div class="input-group">
@@ -37,15 +37,40 @@
 <script>
 $(document).ready(function(){
     btnEvent.init();
+    webSocketEvent.init();
 })
 
 var btnEvent = { 
     init : function(){
         $('#submitBtn').on('click',function(){
             var msg = $('#messageText').val();
-            alert("메시지 : " + msg);
+            webSocketEvent.send(msg);
+            $('#messageText').val('');
         });
     }
 }
+
+var webSocketEvent = {
+    ws : null,
+    init : function(){
+        this.ws = new WebSocket('ws://localhost:9999/ws');
+
+        this.ws.onopen = function () {
+            console.log('connect');
+        };
+
+        this.ws.onmessage = function (msg) {
+            $('#chatArea').append($('<li>').html('message: ' + msg.data));
+        };
+        this.ws.onclose = function () {
+           console.log("disconnect");
+        };
+        
+    },
+    send : function(message){
+        this.ws.send(message);
+    }
+}
+
 </script>
 </html>
