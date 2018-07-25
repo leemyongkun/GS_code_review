@@ -1,6 +1,6 @@
 var clients = [];
 var ws = {
-    init : (app , wpApi) => {
+    init : (app , wpApi , mongoApi) => {
         console.log("init Express-WebSocket");
 
         app.ws('/ws', (ws, req) => {
@@ -8,18 +8,29 @@ var ws = {
             clients.push(ws);
           
             ws.on('message', message => {
-               
+             
                  //webpurify 단어가 일치하는지 확인
-                 wpApi.return(message).then( retval => {
-                    clients.forEach(socket => {
-                        retval.forEach( word => {
+                 wpApi.return(message).then( matchWord => {
+
+                    //현재 접속자들에게 메시지를 보낸다.
+                    clients.forEach( ( client, retVal ) => {
+
+                        //BlackList에 포함된 단어 빨간색으로 처리한다.
+                        matchWord.forEach( word => {
+                            
+                            mongoApi.insert(word);
+
                             let regExp = new RegExp(word , "g");
                             message = message.replace(regExp,"<font color='red'>"+word+"</font>")
                         });
-                        socket.send(message);
+                        //mongoApi.insert(message);
+                        client.send(message);
                         
                     });
-                })
+                    return matchWord;
+
+                });
+
             });
             
             ws.on('close', () => {

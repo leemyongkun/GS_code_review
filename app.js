@@ -15,24 +15,28 @@ var path = require('path'),
     express = require('express'),
     app = express();
 var expressWs = require('express-ws')(app);
-var ws = require('./custom_modules/expressWs');
+var wss = require('./custom_modules/expressWs');
 
 //몽고DB API 설정 초기화
-var mongoApi = require('./custom_modules/mongoApi').init();
-
+var mongoApi = require('./custom_modules/mongoApi');
 //WebPurify API 설정 초기화
-var wpApi = require('./custom_modules/WebPurifyApiNodeModule');
+var wpApi = require('./custom_modules/webPurifyApi');
 
 app.set("port",9999);
 
 //resources Path 설정 초기화
 app.use('/resources', express.static(path.join(__dirname,'/resources')));
 
+
+//몽고DB 커넥션 초기화
+mongoApi.init();
+
 //webpurify 초기화
 wpApi.init();
 
-//websocket 초기화
-ws.init(app , wpApi);
+//webSocketServer 초기화
+wss.init(app , wpApi, mongoApi);
+ 
 
 //라우터 셋팅
 //app.use(express.Router);

@@ -25,4 +25,4 @@ var wpApi = {
 
 
 
-module.exports=wpApi;
+module.exports = wpApi;
