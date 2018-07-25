@@ -52,6 +52,10 @@ app.get("/blacklist",(req, res) => {
         res.status(200).json(list);
     });
 });
+
+app.all('*', (req,res)=>{
+    res.status(404).send('404 - 잘못된 접근페이지입니다.');
+})
 //app.use(express.Router);
 
 
