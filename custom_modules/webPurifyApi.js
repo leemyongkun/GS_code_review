@@ -1,3 +1,4 @@
+'use strict'
 /*
  * @update : 2018.07.24
  * @author : 임용근

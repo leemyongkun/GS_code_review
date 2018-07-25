@@ -11,22 +11,26 @@ var ws = {
              
                  //webpurify 단어가 일치하는지 확인
                  wpApi.return(message).then( matchWord => {
-
+                    
                     //현재 접속자들에게 메시지를 보낸다.
-                    clients.forEach( ( client, retVal ) => {
-
+                    clients.forEach( ( client) => {
+                       
+                        let msg = message;
+                        
                         //BlackList에 포함된 단어 빨간색으로 처리한다.
                         matchWord.forEach( word => {
-                            
-                            mongoApi.insert(word);
-
+                           // mongoApi.insert(word);
                             let regExp = new RegExp(word , "g");
-                            message = message.replace(regExp,"<font color='red'>"+word+"</font>")
+                            msg = message.replace(regExp,"<font color='red'>"+word+"</font>")
                         });
                         //mongoApi.insert(message);
-                        client.send(message);
-                        
+                        client.send("<span class='word'>"+ msg +"</span>");
                     });
+
+                    matchWord.forEach( word => {
+                        mongoApi.insert(word);
+                    });
+
                     return matchWord;
 
                 });

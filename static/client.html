@@ -7,10 +7,11 @@
 <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap/bootstrap.min.css">
 <script type="text/javascript" charset="utf-8" src="resources/js/jquery/jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="resources/js/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/js/custom/ajax.js"></script>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <span class="glyphicon glyphicon-comment"></span> 노드 심플 채팅
@@ -30,6 +31,20 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                   블랙리스트 워드
+                </div>
+                <div class="panel-body">
+                    <ul id="blackList"> </ul>
+                </div>
+                 
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -38,10 +53,32 @@
 $(document).ready(function(){
     btnEvent.init();
     webSocketEvent.init();
+    blackList.get();
 })
+
+var global = {
+    blackList : new Array()
+}
+
+var blackList = {
+    get : function() {
+        Api.getBlackList(null).then(function(res){
+            $(res).each(function(idx, item){
+                global.blackList.push(item.name);
+                $('#blackList').append('<li>'+item.name+'</li>');
+            });
+        });
+    }
+}
 
 var btnEvent = { 
     init : function(){
+        $('#messageText').on('keydown', function(event){
+            if(event.keyCode == 13){//엔터
+                $('#submitBtn').trigger('click');
+            }
+        });
+
         $('#submitBtn').on('click',function(){
             var msg = $('#messageText').val();
             webSocketEvent.send(msg);
@@ -60,7 +97,29 @@ var webSocketEvent = {
         };
 
         this.ws.onmessage = function (msg) {
-            $('#chatArea').append($('<li>').html('message: ' + msg.data));
+            
+            var _this = $('#chatArea');
+
+            $('#chatArea').append($('<li>').html('<span>message: </span>' + msg.data))
+                .promise().done(function(){
+                    var word = $(_this).find('li:last-child .word'); //최근 등록된 문자열
+                    
+                    //필터링된 단어가 포함되어있으면
+                    if($(word).find('font').length > 0){
+
+                        //모두 블랙리스트에 표시하도록 한다.
+                        $(word).find('font').each(function(idx, item){
+                            
+                            //블랙리스트에 단어가 없으면 표시하고, 있으면 표시하지 않는다.
+                            if(!global.blackList.includes($(item).text())){
+                                global.blackList.push($(item).text());
+                                $('#blackList').append('<li>'+$(item).text()+'</li>');
+                            }
+                            
+                        });
+                        //console.log("있음" ,$(word).find('font').length , $(word).html() );
+                    }
+                });
         };
         this.ws.onclose = function () {
            console.log("disconnect");

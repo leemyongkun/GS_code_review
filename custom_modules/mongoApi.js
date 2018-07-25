@@ -1,3 +1,4 @@
+'use strict'
 /*
  * @update : 2018.07.24
  * @author : 임용근
@@ -8,19 +9,19 @@
 
 var mgClient = require('mongodb').MongoClient;
 var dbName = 'gscodereview',
-    collectionName = 'words'
+    collectionName = 'words',
     dbConnUrl = 'mongodb://localhost:27017/'+ dbName;
 var collection;
 
 var mongo = {
     init : () => {
         //MongoDB 연결 구문
-        mgClient.connect(dbConnUrl, (error, client) => {
+        mgClient.connect(dbConnUrl, { useNewUrlParser: true }, (error, client) => {
             if(error){
                 console.log('ERROR : ' , error.message);
                 throw error;
             }
-
+            //콜렉션
             collection = client.db(dbName).collection(collectionName);
 
             console.log('Connected MongoDB (DB : '+dbName+')');
@@ -33,7 +34,6 @@ var mongo = {
         var param ={
             name : word
         }
-
         //추가하려는 단어가 있는지 조회
         collection.find(param).toArray( (error, result)=>{
             if(error){
@@ -60,6 +60,7 @@ var mongo = {
                     res(result);
                 }
             });
+
         });
     }
 }

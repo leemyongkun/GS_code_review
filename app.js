@@ -1,3 +1,4 @@
+'use strict'
 /*
  * @update : 2018.07.24
  * @author : 임용근
@@ -10,13 +11,15 @@
     -path
     -mongdb
 */
+
 //var http = require('http');
 var path = require('path'),
     express = require('express'),
     app = express();
 var expressWs = require('express-ws')(app);
-var wss = require('./custom_modules/expressWs');
 
+//웹소켓 설정
+var wss = require('./custom_modules/expressWs');
 //몽고DB API 설정 초기화
 var mongoApi = require('./custom_modules/mongoApi');
 //WebPurify API 설정 초기화
@@ -39,12 +42,19 @@ wss.init(app , wpApi, mongoApi);
  
 
 //라우터 셋팅
-//app.use(express.Router);
-
-//채팅화면
+//채팅화면 출력
 app.get("/onChat",(req,res) => {
     res.sendFile(path.join(__dirname, '/static', 'client.html'));
 });
+
+//몽고DB로부터 등록된 BlackList Word 가져오기
+app.get("/blacklist",(req, res) => {
+    mongoApi.wordList().then( list =>{
+        res.status(200).json(list);
+    });
+});
+//app.use(express.Router);
+
 
 
 app.listen(app.get('port'), () => { 
