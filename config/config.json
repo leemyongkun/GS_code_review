@@ -1,0 +1,10 @@
+{
+    "mongo" : {
+        "url"   :   "mongodb://localhost:27017",
+        "db"    :   "gscodereview",
+        "collection"    :   "words"
+    },
+    "webpurify" : {
+        "api_key"   :   "730bb0ab1887bb21e9729f7fddd809ab"
+    }
+}

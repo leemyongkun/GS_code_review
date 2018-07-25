@@ -8,9 +8,11 @@
 //Test PATH : mongod --dbpath "c:\Users\ykleem\Documents\mongod\gscodereview"
 
 var mgClient = require('mongodb').MongoClient;
-var dbName = 'gscodereview',
-    collectionName = 'words',
-    dbConnUrl = 'mongodb://localhost:27017/'+ dbName;
+var mongoConfig = require('../config/config.json').mongo;
+
+var dbName = mongoConfig.db,
+    collectionName = mongoConfig.collection,
+    dbConnUrl = mongoConfig.url +'/'+ dbName;
 var collection;
 
 var mongo = {

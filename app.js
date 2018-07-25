@@ -18,6 +18,8 @@ var path = require('path'),
     app = express();
 var expressWs = require('express-ws')(app);
 
+app.set("port", 9999);
+
 //웹소켓 설정
 var wss = require('./custom_modules/expressWs');
 //몽고DB API 설정 초기화
@@ -25,11 +27,8 @@ var mongoApi = require('./custom_modules/mongoApi');
 //WebPurify API 설정 초기화
 var wpApi = require('./custom_modules/webPurifyApi');
 
-app.set("port",9999);
-
 //resources Path 설정 초기화
 app.use('/resources', express.static(path.join(__dirname,'/resources')));
-
 
 //몽고DB 커넥션 초기화
 mongoApi.init();

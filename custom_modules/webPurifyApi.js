@@ -6,11 +6,13 @@
 */
 
 const WebPurify = require('webpurify');
+const wpConfig = require('../config/config.json').webpurify;
+
 var wp = null;
 var wpApi = {
     init : () => {
         wp = new WebPurify({
-            api_key: "730bb0ab1887bb21e9729f7fddd809ab"
+            api_key: wpConfig.api_key
         });
     },
     return : (text) => {
