@@ -32,7 +32,7 @@ app.set("port", 9999);
 app.use('/resources', express.static(path.join(__dirname, '/resources')));
 
 //라우터 셋팅
-app.use('/', require('./custom_modules/rootRouter')(express));
+app.use('/', require('./router/root')(express));
 
 /*
 1. connection pool 생성
