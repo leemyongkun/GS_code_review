@@ -28,7 +28,4 @@ var wpApi = {
         return wp.addToBlacklist(word, 1); //deep search 기능 on
     }
 }
-
-
-
 module.exports = wpApi;

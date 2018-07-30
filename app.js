@@ -20,41 +20,26 @@
 var path = require('path'),
     express = require('express'),
     app = express();
-var expressWs = require('express-ws')(app);
-//웹소켓 설정
-var wss = require('./custom_modules/expressWs');
 //몽고DB API
 var mongoApi = require('./custom_modules/mongoApi');
 
+//웹소켓 설정
+require('./custom_modules/expressWs')(app);
+
 app.set("port", 9999);
+
 //resources Path 설정 초기화
 app.use('/resources', express.static(path.join(__dirname, '/resources')));
-//webSocketServer 초기화
-wss.init(app);
 
 //라우터 셋팅
-//채팅화면 출력
-app.get("/onChat", (req, res) => {
-    res.sendFile(path.join(__dirname, '/static', 'client.html'));
-});
-
-
-//몽고DB로부터 등록된 BlackList Word 가져오기
-app.get("/blacklist", (req, res) => {
-    mongoApi.wordList().then(list => {
-        res.status(200).json(list);
-    });
-});
-
-app.all('*', (req, res) => {
-    res.status(404).send('404 - 잘못된 접근페이지입니다.');
-});
+app.use('/', require('./custom_modules/rootRouter')(express));
 
 /*
 1. connection pool 생성
 2. DB로 인한 Server runtime에러를 방지 하기 위해 Startup 하기 전, Connection을 우선 생성한다.
 */
 mongoApi.getConnection().then(() => {
+
     app.listen(app.get('port'), () => {
         console.log("Startup Node WebApplication for CodeReview ")
     });
