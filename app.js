@@ -22,7 +22,6 @@ var path = require('path'),
     app = express();
 //몽고DB API
 var mongoApi = require('./custom_modules/mongoApi');
-
 //웹소켓 설정
 require('./custom_modules/expressWs')(app);
 
